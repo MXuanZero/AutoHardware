@@ -38,3 +38,30 @@ git submodule status                         # 查看当前锁定提交
 cd kicad && git checkout <sha>               # 手动切换子模块版本
 git add kicad && git commit                  # 记录新的子模块提交
 ```
+
+## deepseek-harness 本地构建
+
+所有配置 / 缓存都落在仓库内（默认会写到 `$HOME`），由 `env.sh` 统一设置，
+不修改任何全局配置；`.gitignore` 已排除这些目录。
+
+```bash
+source ./env.sh                              # 切换 Node 24 + 本地化目录
+cd deepseek-harness
+corepack pnpm install                        # 首次安装依赖（按 package.json 锁定 pnpm@11.28.5）
+corepack pnpm run build                      # 约 3 分钟，10 个 gate
+corepack pnpm dsh web --no-open              # 启动 Web UI（默认 127.0.0.1:3080）
+```
+
+`env.sh` 把下列默认在主目录的位置改到仓库内：
+
+| 变量 | 仓库内路径 | 默认位置 |
+| --- | --- | --- |
+| `DSH_HOME` | `.dsh/` | `~/.dsh` |
+| `DSH_RESOURCE_CACHE` | `.cache/deepseek-harness/resources` | `~/.cache/deepseek-harness/resources` |
+| `COREPACK_HOME` | `.pnpm/corepack` | `~/.cache/node/corepack` |
+| `PNPM_HOME`（含 pnpm store） | `.pnpm/home` | `~/.local/share/pnpm` |
+| `npm_config_cache` | `.pnpm/npm-cache` | `~/.npm` |
+| `ELECTRON_CACHE` / `ELECTRON_BUILDER_CACHE` / `PLAYWRIGHT_BROWSERS_PATH` | `.cache/*` | `~/.cache/*` |
+
+注意：`.dsh/` 内会写入 `/.credentials.yaml` 等凭据，已在 `.gitignore` 中排除，请勿提交。
+如需复用主目录里已有的登录状态，可执行 `cp -a ~/.dsh/. .dsh/`。

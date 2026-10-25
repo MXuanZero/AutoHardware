@@ -1,0 +1,7 @@
+# 本地环境产生的目录（见 env.sh）
+.dsh/
+.cache/
+.pnpm/
+.data/
+
+# 各子模块内部产物由子模块自身的 .gitignore 管理
