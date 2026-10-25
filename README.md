@@ -74,6 +74,23 @@ scripts/dsh_start.fish --help                 # 其余参数全部透传给 dsh
 
 设置 `DSH_SKIP_SETUP=1` 可跳过这两步自动配置，比如只想临时换个 profile 试插件。
 
+### 清理 / 重置本地状态
+
+会话、工作区注册表、登录凭据都在 `.dsh/` 下（已被 git 忽略）：
+
+```fish
+# 只清会话与工作区（保留 profile 与登录，下次启动会重新登记本项目）
+rm -rf .dsh/sessions .dsh/storages
+scripts/dsh_start.fish web --no-open      # 重新生成干净的工作区
+
+# 彻底重置（会丢失登录状态与已启用插件，需重跑 pnpm install 与插件启用）
+rm -rf .dsh
+```
+
+注意：dsh 首次启动会在 `~/Documents/deepseek-harness/default-workspace` 自建一个占位
+工作区。本脚本已提前登记项目工作区，因此不会再生成它；如过去生成过，可直接删除
+`~/Documents/deepseek-harness`。
+
 ### 首次构建（bash）
 
 ```bash
