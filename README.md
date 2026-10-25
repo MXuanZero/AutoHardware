@@ -46,7 +46,7 @@ git add kicad && git commit                  # 记录新的子模块提交
 
 | 脚本 | 用途 |
 | --- | --- |
-| `scripts/dsh_start.fish` | **运行 dsh**（fish）：自动定位仓库根、切 Node 24、导出本地化环境变量并启动 |
+| `scripts/dsh_start.fish` | **运行 dsh**（fish）：自动定位仓库根、切 Node 24、导出本地化环境变量、启动前完成插件与工作区配置，然后启动 |
 | `scripts/env.sh` | 仅导出环境变量（bash）：需要在仓库内手动执行 pnpm 命令时 `source` 它 |
 
 ### 运行 dsh
@@ -59,6 +59,20 @@ scripts/dsh_start.fish tui                    # 终端 UI
 scripts/dsh_start.fish headless "跑一下测试"   # 跑一个任务后退出
 scripts/dsh_start.fish --help                 # 其余参数全部透传给 dsh
 ```
+
+`dsh web` 是**前台常驻服务**，不会自己退出：看到 `dsh web: http://127.0.0.1:3080/?token=…`
+就是在正常服务，用 Ctrl-C 结束。已配置好时启动约 2 秒；**首次**启动会先用 pnpm
+把智能体团队插件装进 `web` profile（生成 `.dsh/profiles/web/pnpm-lock.yaml`），会多花几十秒。
+
+启动前的自动配置（幂等，已配置则秒过）：
+
+| 步骤 | 行为 | 依据 |
+| --- | --- | --- |
+| 1 | 在 `web` profile 中启用**智能体团队**插件：`dsh plugin --profile web add packages/experimental/agent-team-profile`（用本地 `link:`，版本与源码一致） | 对应界面上的「智能体团队」开关 |
+| 2 | 把仓库根目录登记为**默认工作区**（写入 `.dsh/storages/workspace.json`，并把 `createdAt` 设为当前时间，使 Web UI 启动时自动选中它） | Web UI 会恢复上次选择，否则 auto-pick 最近的工作区 |
+| 3 | 以仓库根目录作为进程工作目录（会话的默认文件系统位置） | `docs/user/guide/index.zh.md` |
+
+设置 `DSH_SKIP_SETUP=1` 可跳过这两步自动配置，比如只想临时换个 profile 试插件。
 
 ### 首次构建（bash）
 
