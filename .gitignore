@@ -1,7 +1,10 @@
-# 本地环境产生的目录（见 env.sh）
-.dsh/
-.cache/
-.pnpm/
-.data/
+# dsh 本地运行时状态：会话、工作区注册表、profile，以及登录凭据
+# （.dsh/.credentials.yaml 内含 token）——绝不提交
+/.dsh/
+
+# 本地缓存与包管理器状态（见 scripts/env.sh、scripts/dsh_start.fish）
+/.cache/
+/.pnpm/
+/.data/
 
 # 各子模块内部产物由子模块自身的 .gitignore 管理
