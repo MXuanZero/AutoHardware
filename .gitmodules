@@ -1,0 +1,15 @@
+[submodule "third_party/kicad"]
+	path = third_party/kicad
+	url = https://gitlab.com/kicad/code/kicad.git
+	branch = master
+	shallow = true
+[submodule "third_party/kicad-python"]
+	path = third_party/kicad-python
+	url = https://gitlab.com/kicad/code/kicad-python.git
+	branch = main
+	shallow = true
+[submodule "third_party/deepseek-harness"]
+	path = third_party/deepseek-harness
+	url = https://github.com/deepseek-ai/deepseek-harness.git
+	branch = master
+	shallow = true
