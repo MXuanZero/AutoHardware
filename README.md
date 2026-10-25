@@ -39,20 +39,37 @@ cd kicad && git checkout <sha>               # 手动切换子模块版本
 git add kicad && git commit                  # 记录新的子模块提交
 ```
 
-## deepseek-harness 本地构建
+## deepseek-harness 本地构建与运行
 
-所有配置 / 缓存都落在仓库内（默认会写到 `$HOME`），由 `env.sh` 统一设置，
-不修改任何全局配置；`.gitignore` 已排除这些目录。
+所有配置 / 缓存都落在仓库内（默认会写到 `$HOME`），不修改任何全局配置；
+`.gitignore` 已排除这些目录。`scripts/` 下提供两个脚本：
+
+| 脚本 | 用途 |
+| --- | --- |
+| `scripts/dsh_start.fish` | **运行 dsh**（fish）：自动定位仓库根、切 Node 24、导出本地化环境变量并启动 |
+| `scripts/env.sh` | 仅导出环境变量（bash）：需要在仓库内手动执行 pnpm 命令时 `source` 它 |
+
+### 运行 dsh
+
+```fish
+scripts/dsh_start.fish                        # 默认 web，监听 127.0.0.1:3080 并开浏览器
+scripts/dsh_start.fish web --no-open          # 不开浏览器
+scripts/dsh_start.fish web --no-open --port 3099
+scripts/dsh_start.fish tui                    # 终端 UI
+scripts/dsh_start.fish headless "跑一下测试"   # 跑一个任务后退出
+scripts/dsh_start.fish --help                 # 其余参数全部透传给 dsh
+```
+
+### 首次构建（bash）
 
 ```bash
-source ./env.sh                              # 切换 Node 24 + 本地化目录
+source scripts/env.sh                        # 切 Node 24 + 本地化目录
 cd deepseek-harness
 corepack pnpm install                        # 首次安装依赖（按 package.json 锁定 pnpm@11.28.5）
 corepack pnpm run build                      # 约 3 分钟，10 个 gate
-corepack pnpm dsh web --no-open              # 启动 Web UI（默认 127.0.0.1:3080）
 ```
 
-`env.sh` 把下列默认在主目录的位置改到仓库内：
+`scripts/env.sh` / `scripts/dsh_start.fish` 把下列默认在主目录的位置改到仓库内：
 
 | 变量 | 仓库内路径 | 默认位置 |
 | --- | --- | --- |

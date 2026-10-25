@@ -1,12 +1,12 @@
 # AutoHardware 本地环境脚本
 #
-#   source ./env.sh
+#   source scripts/env.sh
 #
 # 作用：把 deepseek-harness（dsh）及 Node 工具链的配置、缓存、数据目录
 # 全部落在本仓库目录内，而不是 $HOME。所有变量都只影响当前 shell，
 # 不写入任何全局配置文件。
 
-AUTOHARDWARE_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+AUTOHARDWARE_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 # --- Node 24（deepseek-harness 要求 node >= 24.9）---
 if [ -d "$HOME/.local/share/nvm/v24.21.0/bin" ]; then
